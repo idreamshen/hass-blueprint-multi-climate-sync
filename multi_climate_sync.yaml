@@ -1,0 +1,70 @@
+blueprint:
+  name: "Multi Climate Sync"
+  description: "synchronize multiple climate devices, including temperature, mode, and fan speed."
+  domain: automation
+  input:
+    climate_1:
+      name: Primary Climate
+      selector:
+        entity:
+          domain: climate
+    climate_2:
+      name: Secondary Climate
+      selector:
+        entity:
+          domain: climate
+
+trigger:
+  - platform: state
+    entity_id: !input climate_1
+    from: null
+    id: climate_1_mode
+  - platform: state
+    entity_id: !input climate_1
+    attribute: temperature
+    id: climate_1_target_temperature
+  - platform: state
+    entity_id: !input climate_1
+    attribute: fan_mode
+    id: climate_1_fan_mode
+  
+variables:
+  climate_1: !input climate_1
+  climate_2: !input climate_2
+
+action:
+  - if:
+      - condition: trigger
+        id: climate_1_target_temperature
+      - condition: template
+        value_template: "{{ state_attr(climate_1, 'temperature') != state_attr(climate_2, 'temperature') }}"
+    then:
+      - action: climate.set_temperature
+        data:
+          temperature: "{{ state_attr(climate_1, 'temperature') }}"
+        target:
+          entity_id: !input climate_2
+  - if:
+      - condition: trigger
+        id: climate_1_mode
+      - condition: template
+        value_template: "{{ states(climate_1) != states(climate_2) }}"
+    then:
+      - action: climate.set_hvac_mode
+        data:
+          hvac_mode: "{{ states(climate_1) }}"
+        target:
+          entity_id: !input climate_2
+  - if:
+      - condition: trigger
+        id: climate_1_fan_mode
+      - condition: template
+        value_template: "{{ state_attr(climate_1, 'fan_mode') != state_attr(climate_2, 'fan_mode') }}"
+    then:
+      - action: climate.set_fan_mode
+        data:
+          fan_mode: "{{ state_attr(climate_1, 'fan_mode') }}"
+        target:
+          entity_id: !input climate_2
+        
+          
