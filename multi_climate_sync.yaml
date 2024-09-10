@@ -27,6 +27,18 @@ trigger:
     entity_id: !input climate_1
     attribute: fan_mode
     id: climate_1_fan_mode
+  - platform: state
+    entity_id: !input climate_2
+    from: null
+    id: climate_2_mode
+  - platform: state
+    entity_id: !input climate_2
+    attribute: temperature
+    id: climate_2_target_temperature
+  - platform: state
+    entity_id: !input climate_2
+    attribute: fan_mode
+    id: climate_2_fan_mode
   
 variables:
   climate_1: !input climate_1
