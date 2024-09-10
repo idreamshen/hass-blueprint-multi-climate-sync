@@ -8,7 +8,7 @@ This Home Assistant Blueprint allows you to synchronize multiple climate devices
 1. Open Home Assistant, go to `Configuration` -> `Blueprints`.
 2. Click on the `Import Blueprint` button in the top right corner.
 3. In the dialog that appears, enter the following URL and click `Preview`:
-https://github.com/idreamshen/hass-blueprint-multi-climate-sync/raw/main/multi_climate_sync.yaml
+https://github.com/idreamshen/hass-blueprint-multi-climate-sync/blob/main/multi_climate_sync.yaml
 4. Click the `Import Blueprint` button to complete the import.
 
 ## Usage
