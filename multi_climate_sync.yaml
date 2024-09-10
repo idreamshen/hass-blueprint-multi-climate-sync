@@ -37,6 +37,8 @@ action:
       - condition: trigger
         id: climate_1_target_temperature
       - condition: template
+        value_template: "{{ state_attr(climate_1, 'temperature') is not none }}"
+      - condition: template
         value_template: "{{ state_attr(climate_1, 'temperature') != state_attr(climate_2, 'temperature') }}"
     then:
       - action: climate.set_temperature
@@ -47,6 +49,12 @@ action:
   - if:
       - condition: trigger
         id: climate_1_mode
+      - condition: template
+        value_template: "{{ states(climate_1) is not none }}"
+      - condition: template
+        value_template: "{{ states(climate_1) != 'unknown' }}"
+      - condition: template
+        value_template: "{{ states(climate_1) != 'unavailable' }}"
       - condition: template
         value_template: "{{ states(climate_1) != states(climate_2) }}"
     then:
@@ -59,6 +67,8 @@ action:
       - condition: trigger
         id: climate_1_fan_mode
       - condition: template
+        value_template: "{{ state_attr(climate_1, 'fan_mode') is not none }}"
+      - condition: template
         value_template: "{{ state_attr(climate_1, 'fan_mode') != state_attr(climate_2, 'fan_mode') }}"
     then:
       - action: climate.set_fan_mode
@@ -66,5 +76,49 @@ action:
           fan_mode: "{{ state_attr(climate_1, 'fan_mode') }}"
         target:
           entity_id: !input climate_2
+
+  - if:
+      - condition: trigger
+        id: climate_2_target_temperature
+      - condition: template
+        value_template: "{{ state_attr(climate_2, 'temperature') is not none }}"
+      - condition: template
+        value_template: "{{ state_attr(climate_2, 'temperature') != state_attr(climate_1, 'temperature') }}"
+    then:
+      - action: climate.set_temperature
+        data:
+          temperature: "{{ state_attr(climate_2, 'temperature') }}"
+        target:
+          entity_id: !input climate_1
+  - if:
+      - condition: trigger
+        id: climate_2_mode
+      - condition: template
+        value_template: "{{ states(climate_2) is not none }}"
+      - condition: template
+        value_template: "{{ states(climate_2) != 'unknown' }}"
+      - condition: template
+        value_template: "{{ states(climate_2) != 'unavailable' }}"
+      - condition: template
+        value_template: "{{ states(climate_2) != states(climate_1) }}"
+    then:
+      - action: climate.set_hvac_mode
+        data:
+          hvac_mode: "{{ states(climate_2) }}"
+        target:
+          entity_id: !input climate_1
+  - if:
+      - condition: trigger
+        id: climate_2_fan_mode
+      - condition: template
+        value_template: "{{ state_attr(climate_2, 'fan_mode') is not none }}"
+      - condition: template
+        value_template: "{{ state_attr(climate_2, 'fan_mode') != state_attr(climate_1, 'fan_mode') }}"
+    then:
+      - action: climate.set_fan_mode
+        data:
+          fan_mode: "{{ state_attr(climate_2, 'fan_mode') }}"
+        target:
+          entity_id: !input climate_1
         
           
